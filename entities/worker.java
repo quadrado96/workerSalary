@@ -1,6 +1,9 @@
 package entities;
 
+import java.time.YearMonth;
+import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import entities.enums.WorkerLevel;
@@ -61,13 +64,27 @@ public class worker {
 		return contracts;
 	}
 
-	public void setContracts(List<HourContract> contracts) {
-		this.contracts = contracts;
+	public void addContract(HourContract contract) {
+		contracts.add(contract);
 	}
 	
+	public void removeContract(HourContract contract) {
+		contracts.remove(contract);
+	}
 	
-	
-	
-	
-	
+	public double income(int year, int month) {
+	    double sum = baseSalary;
+	    YearMonth targetYearMonth = YearMonth.of(year, month);
+
+	    for (HourContract c : contracts) {
+	        Date contractDate = c.getDate();
+	        YearMonth contractYearMonth = YearMonth.from((TemporalAccessor) contractDate);
+
+	        if (targetYearMonth.equals(contractYearMonth)) {
+	            sum += c.totalValue();
+	        }
+	    }
+
+	    return sum;
+	}
 }
